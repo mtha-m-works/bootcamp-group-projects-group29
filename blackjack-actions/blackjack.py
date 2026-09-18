@@ -21,7 +21,7 @@ def parse_state(text):
     hand_str, dealer_upcard, flag = [part.strip() for part in text.split("|")]
     # validates the flag to return first or later
     if flag not in('first','later'):
-        raise NotImplemented(f'Invalid flag: {flag!r} (expected 'first' or 'later')')
+        raise NotImplemented(f'Invalid flag: {flag!r} (expected "first" or "later")')
     
     #parse takes the results and returns it in the format asked for in the test document
     hand = [rank.strip() for rank in hand_str.split(",")]
