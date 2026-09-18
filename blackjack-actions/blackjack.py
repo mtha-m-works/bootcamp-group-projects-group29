@@ -48,7 +48,7 @@ def generate_actions(state):
     is_first_decision = state['flag'] == 'first'
 
     raise NotImplementedError("This function is not implemented yet.")
-if is_first_decision:
+    if is_first_decision:
         actions.append("double")     # only allowed on your original two cards
         actions.append("surrender")  # only allowed before you've taken any other action
 
