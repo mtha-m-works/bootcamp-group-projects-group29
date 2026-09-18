@@ -26,5 +26,10 @@ if is_first_decision:
         actions.append("double")     # only allowed on your original two cards
         actions.append("surrender")  # only allowed before you've taken any other action
 
+        # Restricting split options by checking if the hand has exactly two cards.
+        if len(hand) == 2 and hand[0] == hand[1]:
+            actions.append("split")
+
+
 def apply_action(state, action, next_card=None):
     raise NotImplementedError("This function is not implemented yet.")
