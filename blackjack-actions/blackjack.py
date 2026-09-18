@@ -22,7 +22,9 @@ def parse_state(text):
 
 def generate_actions(state):
     raise NotImplementedError("This function is not implemented yet.")
-
+if is_first_decision:
+        actions.append("double")     # only allowed on your original two cards
+        actions.append("surrender")  # only allowed before you've taken any other action
 
 def apply_action(state, action, next_card=None):
     raise NotImplementedError("This function is not implemented yet.")
