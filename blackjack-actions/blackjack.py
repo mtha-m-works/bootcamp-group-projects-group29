@@ -1,4 +1,4 @@
-import random
+
 
 RANK_VALUES = {
     "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
@@ -29,7 +29,7 @@ def parse_state(text):
 
     # brings back the results as a dictionary
     return {
-        'hand': hand_value,
+        'hand': hand,
         'hand_value': hand_value(hand),
         'dealer_upcard': dealer_upcard,
         'flag': flag
@@ -106,7 +106,17 @@ def apply_action(state, action, next_card=None):
     if action == "hit":
         if next_card is None:
             raise ValueError("'hit' requires a next_card")
-        return hand + [next_card]
+        new_hand = hand + [next_card]
+        new_value = hand_value(new_hand)
+        return {
+            "hand": new_hand,
+            "hand_value": new_value,
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": state["flag"],
+            "total": new_value,
+            "busted": new_value > 21,
+        }
+
     # STAND
     if action == "stand":
         # The hand stays the same.
@@ -122,8 +132,22 @@ def apply_action(state, action, next_card=None):
         # Insurance does not change the hand.
         return hand
     # SPLIT
+        # SPLIT
     if action == "split":
         card_a, card_b = hand
-        return [[card_a], [card_b]]
+        hand_a = {
+            "hand": [card_a],
+            "hand_value": hand_value([card_a]),
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": "first",
+        }
+        hand_b = {
+            "hand": [card_b],
+            "hand_value": hand_value([card_b]),
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": "first",
+        }
+        return hand_a, hand_b
+
     # If a new action is added but not implemented, this error will show.
     raise NotImplementedError("This function is not implemented yet.")
