@@ -93,42 +93,61 @@ def get_user_action(state, exclude=None):
 
 
 def apply_action(state, action, next_card=None):
+
     # Apply action chosen by player.
 
     hand = state["hand"]
-
     # Check whether the action is allowed.
     if action not in generate_actions(state):
-        raise ValueError(f"'{action}' is not a legal action for this state")
-
+        raise ValueError(
+            f"'{action}' is not a legal action for this state"
+        )
     # HIT
     if action == "hit":
         if next_card is None:
             raise ValueError("'hit' requires a next_card")
-        return hand + [next_card]
+        new_hand = hand + [next_card]
+        new_value = hand_value(new_hand)
+        return {
+            "hand": new_hand,
+            "hand_value": new_value,
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": state["flag"],
+            "total": new_value,
+            "busted": new_value > 21,
+        }
 
     # STAND
     if action == "stand":
         # The hand stays the same.
         return hand
-
     # DOUBLE
     if action == "double":
         if next_card is None:
             raise ValueError("'double' requires a next_card")
+        # Add one card
         return hand + [next_card]
-
     # SURRENDER
     if action == "surrender":
-        # Hand is unchanged; turn is over, half bet forfeited (not tracked here).
+        # Insurance does not change the hand.
         return hand
-
-    # INSURANCE
-    if action == "insurance":
-        # Side bet only; hand and turn are unaffected.
-        return hand
-
     # SPLIT
+        # SPLIT
     if action == "split":
         card_a, card_b = hand
-        return [card_a], [card_b]
+        hand_a = {
+            "hand": [card_a],
+            "hand_value": hand_value([card_a]),
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": "first",
+        }
+        hand_b = {
+            "hand": [card_b],
+            "hand_value": hand_value([card_b]),
+            "dealer_upcard": state["dealer_upcard"],
+            "flag": "first",
+        }
+        return hand_a, hand_b
+
+    # If a new action is added but not implemented, this error will show.
+    raise NotImplementedError("This function is not implemented yet.")
